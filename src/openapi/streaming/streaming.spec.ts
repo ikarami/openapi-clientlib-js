@@ -884,7 +884,7 @@ describe('openapi Streaming', () => {
                 },
             ]);
             expect(subscription.reset.mock.calls.length).toEqual(1);
-            expect(subscription.reset.mock.calls[0]).toEqual([]);
+            expect(subscription.reset.mock.calls[0]).toEqual([true]);
         });
         it('handles reset in data array', () => {
             receivedCallback([
@@ -899,7 +899,7 @@ describe('openapi Streaming', () => {
                 },
             ]);
             expect(subscription.reset.mock.calls.length).toEqual(1);
-            expect(subscription.reset.mock.calls[0]).toEqual([]);
+            expect(subscription.reset.mock.calls[0]).toEqual([true]);
         });
         it('handles reset in data object', () => {
             receivedCallback([
