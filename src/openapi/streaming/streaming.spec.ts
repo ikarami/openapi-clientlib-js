@@ -314,6 +314,9 @@ describe('openapi Streaming', () => {
                 .mockName('onConnectionUnavailable');
             subscription.reset = jest.fn().mockName('reset');
             subscription.dispose = jest.fn().mockName('dispose');
+            subscription.unsubscribeAndSubscribe = jest
+                .fn()
+                .mockName('unsubscribeAndSubscribe');
             stateChangedSpy = jest.fn().mockName('stateChanged');
             streaming.on('connectionStateChanged', stateChangedSpy);
             return streaming;
@@ -495,7 +498,7 @@ describe('openapi Streaming', () => {
                 subscription.onConnectionUnavailable.mock.calls.length,
             ).toEqual(1);
             expect(subscription.reset.mock.calls.length).toEqual(1);
-            expect(subscription.reset.mock.calls[0]).toEqual([]);
+            expect(subscription.reset.mock.calls[0]).toEqual([true]);
         });
 
         it('if signal-r disconnects, it tries to connect and resets subscriptions, if the retry delay is 0', () => {
@@ -531,7 +534,7 @@ describe('openapi Streaming', () => {
                 subscription.onConnectionUnavailable.mock.calls.length,
             ).toEqual(1);
             expect(subscription.reset.mock.calls.length).toEqual(1);
-            expect(subscription.reset.mock.calls[0]).toEqual([]);
+            expect(subscription.reset.mock.calls[0]).toEqual([true]);
 
             expect(subscription.streamingContextId).toEqual('0000000100');
             expect(subscription.streamingContextId).toEqual(
@@ -570,7 +573,7 @@ describe('openapi Streaming', () => {
                 subscription.onConnectionUnavailable.mock.calls.length,
             ).toEqual(1);
             expect(subscription.reset.mock.calls.length).toEqual(1);
-            expect(subscription.reset.mock.calls[0]).toEqual([]);
+            expect(subscription.reset.mock.calls[0]).toEqual([true]);
 
             expect(subscription.streamingContextId).toEqual('0060000000');
             expect(subscription.streamingContextId).toEqual(
@@ -906,7 +909,7 @@ describe('openapi Streaming', () => {
                 },
             ]);
             expect(subscription.reset.mock.calls.length).toEqual(1);
-            expect(subscription.reset.mock.calls[0]).toEqual([]);
+            expect(subscription.reset.mock.calls[0]).toEqual([true]);
         });
         it('handles and ignores reset for a subscription not present', () => {
             receivedCallback([
@@ -944,7 +947,7 @@ describe('openapi Streaming', () => {
             const warnLogSpy = jest.spyOn(log, 'warn');
             receivedCallback([{ ReferenceId: '_resetsubscriptions' }]);
             expect(subscription.reset.mock.calls.length).toEqual(1);
-            expect(subscription.reset.mock.calls[0]).toEqual([]);
+            expect(subscription.reset.mock.calls[0]).toEqual([true]);
             expect(warnLogSpy).toHaveBeenCalledTimes(1);
         });
         it('handles reset all for empty TargetReferenceIds array', () => {
@@ -952,7 +955,7 @@ describe('openapi Streaming', () => {
                 { ReferenceId: '_resetsubscriptions', TargetReferenceIds: [] },
             ]);
             expect(subscription.reset.mock.calls.length).toEqual(1);
-            expect(subscription.reset.mock.calls[0]).toEqual([]);
+            expect(subscription.reset.mock.calls[0]).toEqual([true]);
         });
         it('handles an unknown control event', () => {
             receivedCallback([
@@ -1036,7 +1039,7 @@ describe('openapi Streaming', () => {
             expect(
                 subscription.onConnectionUnavailable.mock.calls.length,
             ).toEqual(1);
-            expect(subscription.reset.mock.calls.length).toEqual(1);
+            expect(subscription.dispose.mock.calls.length).toEqual(1);
             expect(transport.delete.mock.calls.length).toEqual(1);
             expect(transport.delete.mock.calls[0][0]).toEqual('root');
             expect(transport.delete.mock.calls[0][1]).toEqual(
